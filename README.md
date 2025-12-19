@@ -48,7 +48,7 @@ design, frontend–blockchain interaction, and containerized deployment using Do
 - **Token Contract:** `0xYourTokenAddress`
 - **Faucet Contract:** `0xYourFaucetAddress`
 
-Etherscan links:
+**Etherscan Links:**
 - https://sepolia.etherscan.io/address/0xYourTokenAddress
 - https://sepolia.etherscan.io/address/0xYourFaucetAddress
 
@@ -58,36 +58,33 @@ Etherscan links:
 
 ```bash
 cp .env.example .env
-# edit .env with your values
-bash
-```
+# Edit .env with your values
 docker compose up --build
 ```
-Access the application at:
+Access the application:
 ```
 http://localhost:3000
-
 ```
-Health Check:
-
+Health check:
 ```
 http://localhost:3000/health
-
 ```
-
 ## 5. Configuration
 
 Environment variables used:
 
 VITE_RPC_URL – Sepolia RPC endpoint
-VITE_TOKEN_ADDRESS – Deployed ERC-20 token address
-VITE_FAUCET_ADDRESS – Deployed faucet contract address
-These values are injected at build time and not hardcoded.
----
 
+VITE_TOKEN_ADDRESS – Deployed ERC-20 token address
+
+VITE_FAUCET_ADDRESS – Deployed faucet contract address
+
+These values are injected at build time and are not hardcoded.
+---
 ## 6. Design Decisions
 
 Faucet Amount: Fixed per request to prevent abuse
+
 Cooldown Period: Prevents rapid repeated claims
 
 Lifetime Limit: Ensures fair distribution
@@ -95,7 +92,6 @@ Lifetime Limit: Ensures fair distribution
 Maximum Token Supply: Prevents infinite minting
 
 All values were chosen to balance usability, security, and gas efficiency.
-
 ---
 ## 7. Testing Approach
 
@@ -114,7 +110,6 @@ Lifetime limit enforcement
 Pause functionality
 
 Frontend tested manually using MetaMask on Sepolia
-
 ---
 ## 8. Security Considerations
 
@@ -126,7 +121,7 @@ Clear revert messages for failure cases
 
 No sensitive data hardcoded
 
-Health endpoint for container readiness
+Health endpoint used for container readiness
 ---
 ## 9. Known Limitations & Future Improvements
 
@@ -137,20 +132,3 @@ Admin panel not implemented (admin actions tested via scripts)
 Multi-chain support not included
 
 Rate limiting handled only at contract level
----
-## Health Endpoint
-
-The application exposes a health endpoint for container readiness checks:
-```
-GET /health
-```
-
-Returns HTTP 200 with body:
-```
-OK
-```
-## Developer Notes
-
-This project was built to meet all requirements of the ERC-20 Faucet DApp evaluation
-task, including smart contract security, frontend interaction, Docker support, and
-automated health checks.
