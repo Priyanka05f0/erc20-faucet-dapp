@@ -56,10 +56,13 @@ design, frontend–blockchain interaction, and containerized deployment using Do
 
 ## 4. Quick Start
 
+> Prerequisites: Docker & Docker Compose installed
+
 ```bash
 cp .env.example .env
 # Edit .env with your values
 docker compose up --build
+
 ```
 Access the application:
 ```
