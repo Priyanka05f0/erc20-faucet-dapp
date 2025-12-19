@@ -154,3 +154,18 @@ Returns HTTP 200 indicating application readiness.
 This project was built to meet all requirements of the ERC-20 Faucet DApp evaluation
 task, including smart contract security, frontend interaction, Docker support, and
 automated health checks.
+
+
+## Screenshots
+
+### Application Running
+![App Running](screenshots/app-running.png)
+
+### Wallet Connection (MetaMask)
+![MetaMask Connect](screenshots/metamask-connect.png)
+
+### Wallet Connected
+![Wallet Connected](screenshots/wallet-connected.png)
+
+### Claim Error State
+![Claim Error](screenshots/claim-error.png)
