@@ -136,3 +136,19 @@ Admin panel not implemented (admin actions tested via scripts)
 Multi-chain support not included
 
 Rate limiting handled only at contract level
+---
+## Health Endpoint
+
+The application exposes a health endpoint for container readiness checks:
+```
+GET /health
+```
+Returns HTTP 200 with body:
+```
+OK
+```
+## Developer Notes
+
+This project was built to meet all requirements of the ERC-20 Faucet DApp evaluation
+task, including smart contract security, frontend interaction, Docker support, and
+automated health checks.
