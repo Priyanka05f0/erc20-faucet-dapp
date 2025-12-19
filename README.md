@@ -80,6 +80,7 @@ VITE_TOKEN_ADDRESS – Deployed ERC-20 token address
 VITE_FAUCET_ADDRESS – Deployed faucet contract address
 
 These values are injected at build time and are not hardcoded.
+
 ---
 ## 6. Design Decisions
 
@@ -92,6 +93,7 @@ Lifetime Limit: Ensures fair distribution
 Maximum Token Supply: Prevents infinite minting
 
 All values were chosen to balance usability, security, and gas efficiency.
+
 ---
 ## 7. Testing Approach
 
@@ -110,6 +112,8 @@ Lifetime limit enforcement
 Pause functionality
 
 Frontend tested manually using MetaMask on Sepolia
+
+
 ---
 ## 8. Security Considerations
 
@@ -121,7 +125,7 @@ Clear revert messages for failure cases
 
 No sensitive data hardcoded
 
-Health endpoint used for container readiness
+
 ---
 ## 9. Known Limitations & Future Improvements
 
