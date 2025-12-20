@@ -1,35 +1,25 @@
-const { ethers } = require("hardhat");
+const hre = require("hardhat");
 
 async function main() {
-  const [deployer] = await ethers.getSigners();
+  const [deployer] = await hre.ethers.getSigners();
+  console.log("Deploying with:", deployer.address);
 
-  console.log("Deploying contracts with:", deployer.address);
+  // 1️⃣ Deploy TEMP Faucet address (deployer)
+  const Token = await hre.ethers.getContractFactory("Token");
+  const tempToken = await Token.deploy(deployer.address);
+  await tempToken.waitForDeployment();
 
-  // 1. Deploy Faucet first (temporary token address)
-  const Faucet = await ethers.getContractFactory("TokenFaucet");
-  let faucet = await Faucet.deploy(ethers.ZeroAddress);
+  // 2️⃣ Deploy Faucet with token address
+  const Faucet = await hre.ethers.getContractFactory("TokenFaucet");
+  const faucet = await Faucet.deploy(await tempToken.getAddress());
   await faucet.waitForDeployment();
 
-  // 2. Deploy Token with faucet as minter
-  const Token = await ethers.getContractFactory("Token");
-  const token = await Token.deploy(
-    "FaucetToken",
-    "FCT",
-    await faucet.getAddress()
-  );
-  await token.waitForDeployment();
+  // 3️⃣ Deploy FINAL Token with REAL faucet
+  const finalToken = await Token.deploy(await faucet.getAddress());
+  await finalToken.waitForDeployment();
 
-  // 3. Redeploy Faucet with correct token address
-  faucet = await Faucet.deploy(await token.getAddress());
-  await faucet.waitForDeployment();
-
-  console.log("Token deployed to:", await token.getAddress());
-  console.log("Faucet deployed to:", await faucet.getAddress());
+  console.log("FINAL Token:", await finalToken.getAddress());
+  console.log("Faucet:", await faucet.getAddress());
 }
 
-main()
-  .then(() => process.exit(0))
-  .catch((error) => {
-    console.error(error);
-    process.exit(1);
-  });
+main().catch(console.error);

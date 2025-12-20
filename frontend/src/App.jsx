@@ -1,55 +1,73 @@
+import { useState } from "react";
+import { ethers } from "ethers";
+import TOKEN_ABI from "./abis/Token.json";
+import FAUCET_ABI from "./abis/TokenFaucet.json";
+
+const TOKEN_ADDRESS = import.meta.env.VITE_TOKEN_ADDRESS;
+const FAUCET_ADDRESS = import.meta.env.VITE_FAUCET_ADDRESS;
+
+
 function App() {
-  const connectWallet = async () => {
-    if (!window.ethereum) {
-      alert("MetaMask not found");
-      return;
-    }
+  const [account, setAccount] = useState("");
+  const [balance, setBalance] = useState("0");
+
+  async function connectWallet() {
+    if (!window.ethereum) return alert("MetaMask not found");
 
     const accounts = await window.ethereum.request({
       method: "eth_requestAccounts",
     });
 
-    alert("Wallet connected: " + accounts[0]);
-  };
+    setAccount(accounts[0]);
+    await fetchBalance(accounts[0]);
+  }
 
-  const claimTokens = () => {
-    alert("Claim failed: Faucet not funded / cooldown active");
-  };
+  async function fetchBalance(user) {
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    const token = new ethers.Contract(
+      TOKEN_ADDRESS,
+      TOKEN_ABI,
+      provider
+    );
 
-  // ✅ REQUIRED FOR AUTOMATED EVALUATION
-  window.__EVAL__ = {
-    isReady: () => true,
+    const bal = await token.balanceOf(user);
+    setBalance(ethers.formatUnits(bal, 18));
+  }
 
-    getWalletAddress: async () => {
-      if (!window.ethereum) return null;
-      const accounts = await window.ethereum.request({
-        method: "eth_accounts",
-      });
-      return accounts.length > 0 ? accounts[0] : null;
-    },
+  async function claimTokens() {
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    const signer = await provider.getSigner();
 
-    canClaim: async () => {
-      return true;
-    },
+    const faucet = new ethers.Contract(
+      FAUCET_ADDRESS,
+      FAUCET_ABI,
+      signer
+    );
 
-    claimTokens: async () => {
-      return "CLAIM_ATTEMPTED";
-    },
+    const tx = await faucet.requestTokens();
+    await tx.wait();
 
-    getBalance: async () => {
-      return "0";
-    },
-  };
+    alert("Tokens claimed successfully");
+
+    // 🔴 THIS IS WHAT YOU WERE MISSING
+    await fetchBalance(await signer.getAddress());
+  }
 
   return (
-    <div style={{ padding: "20px" }}>
+    <div style={{ padding: "30px" }}>
       <h1>ERC-20 Faucet DApp</h1>
 
-      <button onClick={connectWallet}>Connect Wallet</button>
+      {!account && (
+        <button onClick={connectWallet}>Connect Wallet</button>
+      )}
 
-      <br /><br />
-
-      <button onClick={claimTokens}>Claim Tokens</button>
+      {account && (
+        <>
+          <p><b>Wallet:</b> {account}</p>
+          <p><b>Token Balance:</b> {balance}</p>
+          <button onClick={claimTokens}>Claim Tokens</button>
+        </>
+      )}
     </div>
   );
 }
