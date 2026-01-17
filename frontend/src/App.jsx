@@ -6,20 +6,50 @@ import FAUCET_ABI from "./abis/TokenFaucet.json";
 const TOKEN_ADDRESS = import.meta.env.VITE_TOKEN_ADDRESS;
 const FAUCET_ADDRESS = import.meta.env.VITE_FAUCET_ADDRESS;
 
-
 function App() {
-  const [account, setAccount] = useState("");
+  const [account, setAccount] = useState(null);
   const [balance, setBalance] = useState("0");
+  const [connecting, setConnecting] = useState(false);
 
   async function connectWallet() {
-    if (!window.ethereum) return alert("MetaMask not found");
+    if (!window.ethereum) {
+      alert("MetaMask not installed");
+      return;
+    }
 
-    const accounts = await window.ethereum.request({
-      method: "eth_requestAccounts",
-    });
+    if (connecting) return;
+    setConnecting(true);
 
-    setAccount(accounts[0]);
-    await fetchBalance(accounts[0]);
+    try {
+      // ✅ STEP 1: check if already connected
+      const existingAccounts = await window.ethereum.request({
+        method: "eth_accounts",
+      });
+
+      if (existingAccounts.length > 0) {
+        setAccount(existingAccounts[0]);
+        await fetchBalance(existingAccounts[0]);
+        return;
+      }
+
+      // ✅ STEP 2: only request if NOT connected
+      const accounts = await window.ethereum.request({
+        method: "eth_requestAccounts",
+      });
+
+      setAccount(accounts[0]);
+      await fetchBalance(accounts[0]);
+    } catch (err) {
+      console.error("Connect wallet error:", err);
+
+      if (err.code === -32002) {
+        alert("MetaMask already has a pending request. Open MetaMask.");
+      } else {
+        alert("Wallet connection failed");
+      }
+    } finally {
+      setConnecting(false);
+    }
   }
 
   async function fetchBalance(user) {
@@ -35,22 +65,25 @@ function App() {
   }
 
   async function claimTokens() {
-    const provider = new ethers.BrowserProvider(window.ethereum);
-    const signer = await provider.getSigner();
+    try {
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
 
-    const faucet = new ethers.Contract(
-      FAUCET_ADDRESS,
-      FAUCET_ABI,
-      signer
-    );
+      const faucet = new ethers.Contract(
+        FAUCET_ADDRESS,
+        FAUCET_ABI,
+        signer
+      );
 
-    const tx = await faucet.requestTokens();
-    await tx.wait();
+      const tx = await faucet.requestTokens();
+      await tx.wait();
 
-    alert("Tokens claimed successfully");
-
-    // 🔴 THIS IS WHAT YOU WERE MISSING
-    await fetchBalance(await signer.getAddress());
+      alert("Tokens claimed successfully!");
+      await fetchBalance(await signer.getAddress());
+    } catch (err) {
+      console.error("Claim error:", err);
+      alert("Token claim failed");
+    }
   }
 
   return (
@@ -58,7 +91,9 @@ function App() {
       <h1>ERC-20 Faucet DApp</h1>
 
       {!account && (
-        <button onClick={connectWallet}>Connect Wallet</button>
+        <button onClick={connectWallet} disabled={connecting}>
+          {connecting ? "Connecting..." : "Connect Wallet"}
+        </button>
       )}
 
       {account && (
