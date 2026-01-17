@@ -41,16 +41,14 @@ design, frontend–blockchain interaction, and containerized deployment using Do
 
 ---
 
-## 3. Deployed Contracts (Sepolia Testnet)
+## 3. Environment Variables
 
-> Replace the addresses below with your actual deployed addresses if applicable.
+The frontend uses the following environment variables:
 
-- **Token Contract:** `0xYourTokenAddress`
-- **Faucet Contract:** `0xYourFaucetAddress`
+- VITE_TOKEN_ADDRESS
+- VITE_FAUCET_ADDRESS
 
-**Etherscan Links:**
-- https://sepolia.etherscan.io/address/0xYourTokenAddress
-- https://sepolia.etherscan.io/address/0xYourFaucetAddress
+These are provided after deployment.
 
 ---
 
