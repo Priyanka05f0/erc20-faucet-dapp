@@ -153,9 +153,6 @@ This project was built to meet all requirements of the ERC-20 Faucet DApp evalua
 task, including smart contract security, frontend interaction, Docker support, and
 automated health checks.
 
-
-## Screenshots
-
 ## Screenshots
 
 ### Application Running
@@ -163,7 +160,4 @@ automated health checks.
 
 ### Wallet Connected (MetaMask)
 ![Wallet Connected](screenshots/wallet-connected.png)
-
-### Token Claim Successful
-![Claim Success](screenshots/claim-success.png)
 
