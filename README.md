@@ -156,14 +156,14 @@ automated health checks.
 
 ## Screenshots
 
+## Screenshots
+
 ### Application Running
-![App Running](screenshots/app-running.png)
+![App Running](screenshots/app_running.png)
 
-### Wallet Connection (MetaMask)
-![MetaMask Connect](screenshots/metamask-connect.png)
-
-### Wallet Connected
+### Wallet Connected (MetaMask)
 ![Wallet Connected](screenshots/wallet-connected.png)
 
-### Claim Error State
-![Claim Error](screenshots/claim-error.png)
+### Token Claim Successful
+![Claim Success](screenshots/claim-success.png)
+
